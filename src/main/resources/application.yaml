@@ -1,0 +1,46 @@
+# Custom properties
+appName: electronic-ecommerce
+
+# Application properties
+spring:
+  application:
+    name: ${appName}}
+  datasource:
+    url: jdbc:h2:mem:testdb
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: sa
+    platform: h2
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+      settings:
+        trace: false
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: update
+    format_sql: true
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+
+springdoc:
+  api-docs:
+    path: /swagger-ui/v3/api-docs
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
+
+server:
+  port: 8080
+
+########################
+##  Value properties  ##
+########################
+discounts:
+  electronics: 0.15
+  homeKitchen: 0.25
+  specialSku: 0.30
