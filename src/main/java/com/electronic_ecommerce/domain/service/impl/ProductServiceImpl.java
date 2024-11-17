@@ -1,6 +1,7 @@
 package com.electronic_ecommerce.domain.service.impl;
 
-import com.electronic_ecommerce.application.dto.PagedResponseDto;
+import com.electronic_ecommerce.application.Exceptions.ProductApplicationException;
+import com.electronic_ecommerce.application.dto.PagedProductResponseDto;
 import com.electronic_ecommerce.application.mapper.ProductMapper;
 import com.electronic_ecommerce.domain.model.product.Product;
 import com.electronic_ecommerce.domain.model.product.ProductRepository;
@@ -40,13 +41,18 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Transactional(readOnly = true)
-    public PagedResponseDto<Product> getAllProducts(String category, Integer page, Integer size, String[] sort) {
-        final var validateSort = validateSorting(sort);
-        final var pageNumber = getPageNumber(page);
-        final var pageSize = getPageSize(size);
-        final var pageable = PageRequest.of(pageNumber, pageSize, validateSort);
-        final var productsPage = checkAndApplyAvailableDiscounts(productRepository.findProducts(category, pageable));
-        return productMapper.toPagedResponseDto(productsPage);
+    public PagedProductResponseDto getAllProducts(String category, Integer page, Integer size, String[] sort) {
+        try {
+            final var validateSort = validateSorting(sort);
+            final var pageNumber = getPageNumber(page);
+            final var pageSize = getPageSize(size);
+            final var pageable = PageRequest.of(pageNumber, pageSize, validateSort);
+            final var productsPage = checkAndApplyAvailableDiscounts(productRepository.findProducts(category, pageable));
+            return productMapper.toPagedProductResponseDto(productsPage);
+        } catch (Exception e) {
+            log.error("An unexpected error occurred retrieving the products: {}", e.getMessage());
+            throw new ProductApplicationException(e.getMessage());
+        }
     }
 
     private Page<Product> checkAndApplyAvailableDiscounts(final Page<Product> productPage) {

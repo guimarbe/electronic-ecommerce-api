@@ -1,8 +1,7 @@
 package com.electronic_ecommerce.application.controller;
 
-import com.electronic_ecommerce.application.dto.PagedResponseDto;
+import com.electronic_ecommerce.application.dto.PagedProductResponseDto;
 import com.electronic_ecommerce.domain.service.impl.ProductServiceImpl;
-import com.electronic_ecommerce.domain.model.product.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,7 +28,7 @@ class ProductControllerTest {
 
     @Test
     void shouldGetProducts() {
-        final var pagedResponseDto = new PagedResponseDto<Product>();
+        final var pagedResponseDto = new PagedProductResponseDto();
         when(productService.getAllProducts(any(), any(), any(), any())).thenReturn(pagedResponseDto);
         assertEquals(HttpStatus.OK, productController.getProducts(null, null, null, null).getStatusCode());
     }

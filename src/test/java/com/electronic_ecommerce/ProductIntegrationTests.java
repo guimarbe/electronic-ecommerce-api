@@ -1,6 +1,6 @@
 package com.electronic_ecommerce;
 
-import com.electronic_ecommerce.application.dto.PagedResponseDto;
+import com.electronic_ecommerce.application.dto.PagedProductResponseDto;
 import com.electronic_ecommerce.domain.service.impl.ProductServiceImpl;
 import com.electronic_ecommerce.domain.model.product.Product;
 import org.junit.jupiter.api.Test;
@@ -42,7 +42,7 @@ public class ProductIntegrationTests {
 
     @Test
     void testGetProductsWithoutSort() throws Exception {
-        final var mockResponse = new PagedResponseDto<Product>();
+        final var mockResponse = new PagedProductResponseDto();
         given(productService.getAllProducts(null, null, null, null)).willReturn(mockResponse);
 
         final var result = mockMvc
@@ -59,7 +59,7 @@ public class ProductIntegrationTests {
 
     @Test
     void testGetProductsWithValidSort() throws Exception {
-        final var mockResponse = new PagedResponseDto<Product>();
+        final var mockResponse = new PagedProductResponseDto();
         given(productService.getAllProducts(null, null, null, new String[]{"sku;asc"})).willReturn(mockResponse);
 
         final var result = mockMvc
@@ -78,7 +78,7 @@ public class ProductIntegrationTests {
 
     @Test
     void testGetProductsWithCategoryAndPagination() throws Exception {
-        final var mockResponse = new PagedResponseDto<Product>();
+        final var mockResponse = new PagedProductResponseDto();
         given(productService.getAllProducts("electronics", 1, 20, null)).willReturn(mockResponse);
 
         final var result = mockMvc.perform(get(URL)
@@ -98,7 +98,7 @@ public class ProductIntegrationTests {
 
     @Test
     void testGetProductsWithMultipleSortCriteria() throws Exception {
-        final var mockResponse = new PagedResponseDto<Product>();
+        final var mockResponse = new PagedProductResponseDto();
         given(productService.getAllProducts(null, null, null, new String[]{"price;asc", "sku;desc"})).willReturn(mockResponse);
 
         final var result = mockMvc
@@ -124,10 +124,11 @@ public class ProductIntegrationTests {
         product.setDescription("Test Product");
         product.setCategory("electronics");
 
-        final var mockResponse = new PagedResponseDto<Product>();
+        final var mockResponse = new PagedProductResponseDto();
         mockResponse.setPageNumber(0);
         mockResponse.setPageSize(10);
-        mockResponse.setTotalNumberItems(1);
+        mockResponse.setTotalPages(1);
+        mockResponse.setTotalItems(1);
         mockResponse.setItems(List.of(product));
 
         given(productService.getAllProducts(null, null, null, null)).willReturn(mockResponse);
@@ -137,11 +138,11 @@ public class ProductIntegrationTests {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.items").isArray())
-                .andExpect(jsonPath("$.items[0].sku").value("SKU0050"))
-                .andExpect(jsonPath("$.items[0].price").value(BigDecimal.valueOf(100.0)))
-                .andExpect(jsonPath("$.items[0].description").value("Test Product"))
-                .andExpect(jsonPath("$.items[0].category").value("electronics"))
+                .andExpect(jsonPath("$.products").isArray())
+                .andExpect(jsonPath("$.products[0].sku").value("SKU0050"))
+                .andExpect(jsonPath("$.products[0].price").value(BigDecimal.valueOf(100.0)))
+                .andExpect(jsonPath("$.products[0].description").value("Test Product"))
+                .andExpect(jsonPath("$.products[0].category").value("electronics"))
                 .andReturn();
 
         final var responseBody = result.getResponse().getContentAsString();

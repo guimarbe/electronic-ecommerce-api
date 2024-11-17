@@ -1,6 +1,7 @@
 package com.electronic_ecommerce.application.controller;
 
-import com.electronic_ecommerce.application.dto.PagedResponseDto;
+import com.electronic_ecommerce.application.dto.ErrorResponseDto;
+import com.electronic_ecommerce.application.dto.PagedProductResponseDto;
 import com.electronic_ecommerce.domain.service.impl.ProductServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -34,15 +35,15 @@ public class ProductController {
 
     @Operation(summary = "Get all products")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Products obtained", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = PagedResponseDto.class))}),
-            @ApiResponse(responseCode = "400", description = "Invalid product search", content = @Content),
-            @ApiResponse(responseCode = "404", description = "Products not found", content = @Content)
+            @ApiResponse(responseCode = "200", description = "Products obtained", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = PagedProductResponseDto.class))}),
+            @ApiResponse(responseCode = "400", description = "Invalid product search", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponseDto.class))}),
+            @ApiResponse(responseCode = "500", description = "There was an unexpected error", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponseDto.class))})
     })
     @Parameters({
             @Parameter(in = ParameterIn.QUERY, name = "category",
                     description = """
                         Type the kind of product are you looking for.<br>
-                        - Categories available at the moment: \"accessories\", \"clothing\", \"electronics\", \"footwear\", \"home appliances\", \"home & kitchen\", \"sports\",  \"stationery\", \"toys & games\".<br>
+                        - Currently categories available: \"accessories\", \"clothing\", \"electronics\", \"footwear\", \"home appliances\", \"home & kitchen\", \"sports\",  \"stationery\", \"toys & games\".<br>
                         """),
             @Parameter(in = ParameterIn.QUERY, name = "page", description = """
                         Shows the page number you want to retrieve (0..N).<br>
@@ -63,11 +64,11 @@ public class ProductController {
                         - Multiple sort criteria are supported.<br>
                         - Default sort order is ascending.<br>
                         """,
-                    example = "sku,asc",
+                    example = "sku;asc",
                     array = @ArraySchema(schema = @Schema(type = "string", defaultValue = "sku;asc")), style = ParameterStyle.SIMPLE)
     })
     @GetMapping
-    public ResponseEntity<Object> getProducts(@RequestParam(required = false) String category,
+    public ResponseEntity<PagedProductResponseDto> getProducts(@RequestParam(required = false) String category,
                                               @RequestParam(required = false) Integer page,
                                               @RequestParam(required = false) Integer size,
                                               @RequestParam(required = false) String[] sort) {

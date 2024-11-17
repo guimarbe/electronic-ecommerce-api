@@ -1,8 +1,8 @@
 package com.electronic_ecommerce.domain.service;
 
+import com.electronic_ecommerce.application.dto.PagedProductResponseDto;
 import com.electronic_ecommerce.application.dto.PagedResponseDto;
 import com.electronic_ecommerce.application.mapper.ProductMapper;
-import com.electronic_ecommerce.application.utils.CompletableFutureUtils;
 import com.electronic_ecommerce.domain.model.product.Product;
 import com.electronic_ecommerce.domain.model.product.ProductRepository;
 import com.electronic_ecommerce.domain.service.impl.DiscountServiceImpl;
@@ -32,8 +32,6 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class ProductServiceTest {
 
-    private ExecutorService executorService;
-
     @Mock
     private DiscountServiceImpl discountService;
 
@@ -43,8 +41,7 @@ class ProductServiceTest {
     @Mock
     private ProductMapper productMapper;
 
-    @Mock
-    private CompletableFutureUtils completableFutureUtils;
+    private ExecutorService executorService;
 
     private ProductServiceImpl productService;
 
@@ -64,12 +61,12 @@ class ProductServiceTest {
         // Given
         final var category = "electronics";
         final var productPage = productPageSample();
-        final var expectedResponse = pagedResponseDtoSample();
+        final var expectedResponse = pagedProductResponseDtoSample();
 
         // When
         when(productRepository.findProducts(eq(category), any(Pageable.class))).thenReturn(productPage);
         when(discountService.applyDiscount(any(Product.class))).thenReturn(BigDecimal.valueOf(90));
-        when(productMapper.toPagedResponseDto(productPage)).thenReturn(expectedResponse);
+        when(productMapper.toPagedProductResponseDto(productPage)).thenReturn(expectedResponse);
 
         // Then
         PagedResponseDto<Product> result = productService.getAllProducts(category, PAGE, SIZE, SORT);
@@ -77,11 +74,11 @@ class ProductServiceTest {
         assertNotNull(result);
         assertEquals(expectedResponse.getPageNumber(), result.getPageNumber());
         assertEquals(expectedResponse.getPageSize(), result.getPageSize());
-        assertEquals(expectedResponse.getTotalNumberItems(), result.getTotalNumberItems());
+        assertEquals(expectedResponse.getTotalItems(), result.getTotalItems());
         assertEquals(expectedResponse.getItems(), result.getItems());
         verify(productRepository).findProducts(eq(category), any(Pageable.class));
         verify(discountService, times(productListSample().size())).applyDiscount(any(Product.class));
-        verify(productMapper).toPagedResponseDto(productPage);
+        verify(productMapper).toPagedProductResponseDto(productPage);
     }
 
     @Test
@@ -116,15 +113,15 @@ class ProductServiceTest {
         // Given
         final List<Product> productList = productListSample();
         final Page<Product> productPage = new PageImpl<>(productList);
-        final PagedResponseDto<Product> expectedResponse = new PagedResponseDto<>();
+        final var expectedResponse = new PagedProductResponseDto();
         expectedResponse.setPageNumber(null);
         expectedResponse.setPageSize(null);
-        expectedResponse.setTotalNumberItems(productList.size());
+        expectedResponse.setTotalItems(productList.size());
         expectedResponse.setItems(productList);
 
         // When
         when(productRepository.findProducts(eq(null), any(Pageable.class))).thenReturn(productPage);
-        when(productMapper.toPagedResponseDto(productPage)).thenReturn(expectedResponse);
+        when(productMapper.toPagedProductResponseDto(productPage)).thenReturn(expectedResponse);
 
         // Then
         final PagedResponseDto<Product> result = productService.getAllProducts(null, null, null, null);

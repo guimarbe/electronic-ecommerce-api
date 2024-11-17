@@ -1,9 +1,11 @@
 package com.electronic_ecommerce.domain.service.impl;
 
+import com.electronic_ecommerce.application.Exceptions.DiscountApplicationException;
 import com.electronic_ecommerce.domain.enums.Category;
 import com.electronic_ecommerce.domain.model.product.Product;
 import com.electronic_ecommerce.domain.service.DiscountService;
 import com.electronic_ecommerce.infraestructure.config.DiscountConfig;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
+@Slf4j
 @Service
 public class DiscountServiceImpl implements DiscountService {
 
@@ -27,10 +30,15 @@ public class DiscountServiceImpl implements DiscountService {
     }
 
     public BigDecimal applyDiscount(final Product product) {
-        final Map<String, Function<Product, BigDecimal>> discountHandlers = getAvailableDiscounts();
-        final var maxDiscount = getMaxDiscount(product, discountHandlers);
-        return product.getPrice().subtract(product.getPrice().multiply(maxDiscount))
-                .setScale(2, RoundingMode.HALF_UP);
+        try {
+            final Map<String, Function<Product, BigDecimal>> discountHandlers = getAvailableDiscounts();
+            final var maxDiscount = getMaxDiscount(product, discountHandlers);
+            return product.getPrice().subtract(product.getPrice().multiply(maxDiscount))
+                    .setScale(2, RoundingMode.HALF_UP);
+        } catch (Exception e) {
+            log.error("An unexpected error occurred while applying a discount: {}", e.getMessage());
+            throw new DiscountApplicationException(e.getMessage());
+        }
     }
 
     /**

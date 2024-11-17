@@ -1,6 +1,6 @@
 package com.electronic_ecommerce.utils;
 
-import com.electronic_ecommerce.application.dto.PagedResponseDto;
+import com.electronic_ecommerce.application.dto.PagedProductResponseDto;
 import com.electronic_ecommerce.domain.model.product.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -27,11 +27,11 @@ public final class ProductConstants {
         return new PageImpl<>(productListSample());
     }
 
-    public static PagedResponseDto<Product> pagedResponseDtoSample() {
-        PagedResponseDto<Product> pagedResponseDto = new PagedResponseDto<>();
+    public static PagedProductResponseDto pagedProductResponseDtoSample() {
+        final var pagedResponseDto = new PagedProductResponseDto();
         pagedResponseDto.setPageNumber(PAGE);
         pagedResponseDto.setPageSize(SIZE);
-        pagedResponseDto.setTotalNumberItems(productListSample().size());
+        pagedResponseDto.setTotalItems(productListSample().size());
         pagedResponseDto.setItems(productListSample());
         return pagedResponseDto;
     }

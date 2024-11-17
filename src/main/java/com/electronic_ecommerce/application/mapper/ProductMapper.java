@@ -1,13 +1,10 @@
 package com.electronic_ecommerce.application.mapper;
 
-import com.electronic_ecommerce.application.dto.PagedResponseDto;
+import com.electronic_ecommerce.application.dto.PagedProductResponseDto;
 import com.electronic_ecommerce.domain.model.product.Product;
 import com.electronic_ecommerce.domain.model.product.ProductEntity;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class ProductMapper extends BaseMapper<ProductEntity, Product> {
 
@@ -30,19 +27,13 @@ public class ProductMapper extends BaseMapper<ProductEntity, Product> {
         return product;
     }
 
-    public Page<Product> convertToDtoPage(Page<ProductEntity> entities) {
-        return entities.map(this::convertToDto);
-    }
-
-    public PagedResponseDto<Product> toPagedResponseDto(Page<Product> productEntityPage) {
-        List<Product> products = new ArrayList<>(productEntityPage.getContent());
-
-        return new PagedResponseDto<>(
-                productEntityPage.getNumber(),
-                productEntityPage.getSize() == Integer.MAX_VALUE ? (int) productEntityPage.getTotalElements() : productEntityPage.getSize(),
-                productEntityPage.getTotalPages(),
-                (int) productEntityPage.getTotalElements(),
-                products
-        );
+    public PagedProductResponseDto toPagedProductResponseDto(Page<Product> productPage) {
+        var pagedResponse = new PagedProductResponseDto();
+        pagedResponse.setPageNumber(productPage.getNumber());
+        pagedResponse.setPageSize(productPage.getSize());
+        pagedResponse.setTotalPages(productPage.getTotalPages());
+        pagedResponse.setTotalItems((int) productPage.getTotalElements());
+        pagedResponse.setItems(productPage.getContent());
+        return pagedResponse;
     }
 }
