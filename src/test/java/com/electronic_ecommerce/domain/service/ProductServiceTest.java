@@ -1,11 +1,13 @@
-package com.electronic_ecommerce.application.service;
+package com.electronic_ecommerce.domain.service;
 
 import com.electronic_ecommerce.application.dto.PagedResponseDto;
 import com.electronic_ecommerce.application.mapper.ProductMapper;
+import com.electronic_ecommerce.application.utils.CompletableFutureUtils;
 import com.electronic_ecommerce.domain.model.product.Product;
 import com.electronic_ecommerce.domain.model.product.ProductRepository;
 import com.electronic_ecommerce.domain.service.impl.DiscountServiceImpl;
 import com.electronic_ecommerce.domain.service.impl.ProductServiceImpl;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,6 +20,8 @@ import org.springframework.data.domain.Pageable;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import static com.electronic_ecommerce.utils.ProductConstants.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -28,6 +32,8 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class ProductServiceTest {
 
+    private ExecutorService executorService;
+
     @Mock
     private DiscountServiceImpl discountService;
 
@@ -37,11 +43,20 @@ class ProductServiceTest {
     @Mock
     private ProductMapper productMapper;
 
+    @Mock
+    private CompletableFutureUtils completableFutureUtils;
+
     private ProductServiceImpl productService;
 
     @BeforeEach
     void setUp() {
-        productService = new ProductServiceImpl(discountService, productRepository, productMapper);
+        executorService = Executors.newFixedThreadPool(4);
+        productService = new ProductServiceImpl(executorService, discountService, productRepository, productMapper);
+    }
+
+    @AfterEach
+    void tearDown() {
+        executorService.shutdown();
     }
 
     @Test

@@ -1,4 +1,4 @@
-package com.electronic_ecommerce.application.service;
+package com.electronic_ecommerce.domain.service;
 
 import com.electronic_ecommerce.domain.enums.Category;
 import com.electronic_ecommerce.domain.model.product.Product;
@@ -22,7 +22,7 @@ class DiscountServiceTest {
 
     private DiscountConfig discountConfig;
 
-    private DiscountServiceImpl discountService;
+    private DiscountService discountService;
 
     @BeforeEach
     void setUp() {

@@ -39,7 +39,7 @@ public class ProductMapper extends BaseMapper<ProductEntity, Product> {
 
         return new PagedResponseDto<>(
                 productEntityPage.getNumber(),
-                productEntityPage.getSize(),
+                productEntityPage.getSize() == Integer.MAX_VALUE ? (int) productEntityPage.getTotalElements() : productEntityPage.getSize(),
                 productEntityPage.getTotalPages(),
                 (int) productEntityPage.getTotalElements(),
                 products

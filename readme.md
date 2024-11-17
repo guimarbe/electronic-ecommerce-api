@@ -78,7 +78,7 @@ mvn test
 This application was designed following clean architecture principles and Domain-Driven Design (DDD) to provide a robust and maintainable structure,
 with a strong focus on encapsulating business rules in the domain layer while keeping external concerns separate. Key Architectural Highlights:
 
-## Layered Design, Scalability and Separation of Concerns
+## Layered Design and Separation of Concerns
 Business rules are decoupled from infrastructure and presentation layers, making the application flexible to changes (e.g., switching databases or exposing new APIs).
 We divided this layers into:
    - **Application**: Handles use cases and orchestrates requests between domain and infrastructure. We allocate here the ProductController,
@@ -99,8 +99,20 @@ Separating these services ensures flexibility in applying discounts without tigh
    - **DiscountService** encapsulates discount rules independently, promoting single responsibility and reusability.
 
 ## Specification Pattern for Pagination
-The Specification pattern is used for pagination and filtering to decouple query logic from repositories.
+The Specification pattern is used for pagination, sorting and filtering to decouple query logic from repositories.
 This makes the codebase more modular and allows the addition of complex filters without altering repository methods.
+
+## CompletableFuture for Scalability
+To ensure scalability and prevent service overloading when handling a high volume of product searches, the application leverages **CompletableFuture** in critical asynchronous operations.
+This approach allows us to:
+   - Process multiple tasks concurrently without blocking threads.
+   - Scale efficiently by delegating asynchronous processing to a dedicated thread pool (ExecutorService).
+   - Improve responsiveness and performance under high traffic by freeing up server resources for other operations.
+
+By using **CompletableFuture**, the system can manage increased workload demands more gracefully, especially in scenarios where multiple external dependencies (e.g., discount calculations, product lookups) are involved.
+
+The decision to use CompletableFuture aligns with our goal of building a system that is robust under load and adaptable to future scalability requirements.
+Configurations for the thread pool ensure optimal resource utilization while avoiding excessive thread creation.
 
 ## JPA repository
 In this application, the JpaRepository leverages the built-in capabilities of JPA while keeping the business-specific query logic separate from low-level CRUD operations,

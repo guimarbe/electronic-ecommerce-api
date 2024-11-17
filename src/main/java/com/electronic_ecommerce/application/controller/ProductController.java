@@ -40,14 +40,31 @@ public class ProductController {
     })
     @Parameters({
             @Parameter(in = ParameterIn.QUERY, name = "category",
-                    description = "Valid categories: [\"accessories\", \"clothing\", \"electronics\", \"footwear\", \"home appliances\", \"home & kitchen\", \"sports\",  \"stationery\", \"toys & games\",]"),
-            @Parameter(in = ParameterIn.QUERY, name = "page", description = "Results page you want to retrieve (0..N). Default page is 0",
+                    description = """
+                        Type the kind of product are you looking for.<br>
+                        - Categories available at the moment: \"accessories\", \"clothing\", \"electronics\", \"footwear\", \"home appliances\", \"home & kitchen\", \"sports\",  \"stationery\", \"toys & games\".<br>
+                        """),
+            @Parameter(in = ParameterIn.QUERY, name = "page", description = """
+                        Shows the page number you want to retrieve (0..N).<br>
+                        - Default page is 0.<br>
+                        """,
+                    example = "0",
                     schema = @Schema(type = "integer", minimum = "0" )),
-            @Parameter(in = ParameterIn.QUERY, name = "size", description = "Number of records per page. Use -1 get max size. Only multipliers by 10. Default size is 10",
-                    schema = @Schema(type = "integer", multipleOf = 10)),
+            @Parameter(in = ParameterIn.QUERY, name = "size", description = """
+                        Number of items per page.<br>
+                        - Use \"-1\" to get max size.<br>
+                        - Only accepts multipliers by 10.<br>
+                        - Default size is 10.<br>
+                        """,
+                    example = "10", schema = @Schema(type = "integer", multipleOf = 10)),
             @Parameter(in = ParameterIn.QUERY, name = "sort",
-                    description = "Sorting criteria in the following format: property(;asc|desc). Multiple sort criteria are supported. Default sort order is ascending",
-                    array = @ArraySchema(schema = @Schema(type = "string")), style = ParameterStyle.SIMPLE)
+                    description = """
+                        Sorting criteria in the following format: property(;asc|desc).<br>
+                        - Multiple sort criteria are supported.<br>
+                        - Default sort order is ascending.<br>
+                        """,
+                    example = "sku,asc",
+                    array = @ArraySchema(schema = @Schema(type = "string", defaultValue = "sku;asc")), style = ParameterStyle.SIMPLE)
     })
     @GetMapping
     public ResponseEntity<Object> getProducts(@RequestParam(required = false) String category,
