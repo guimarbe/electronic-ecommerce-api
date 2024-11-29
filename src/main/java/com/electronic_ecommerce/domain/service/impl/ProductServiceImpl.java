@@ -43,7 +43,7 @@ public class ProductServiceImpl implements ProductService {
     @Transactional(readOnly = true)
     public PagedProductResponseDto getAllProducts(String category, Integer page, Integer size, String[] sort) {
         try {
-            final var validateSort = validateSorting(sort);
+            final var validateSort = validateSorting(sort, Product.class);
             final var pageNumber = getPageNumber(page);
             final var pageSize = getPageSize(size);
             final var pageable = PageRequest.of(pageNumber, pageSize, validateSort);
@@ -61,8 +61,8 @@ public class ProductServiceImpl implements ProductService {
         return new PageImpl<>(discountedProducts, productPage.getPageable(), productPage.getTotalElements());
     }
 
-    private List<CompletableFuture<Product>> createDiscountFutures(List<Product> products) {
-        return products.stream()
+    private List<CompletableFuture<Product>> createDiscountFutures(final List<Product> productList) {
+        return productList.stream()
                 .map(product -> CompletableFuture.supplyAsync(() -> applyDiscountAsync(product), executorService)
                         .exceptionally(ex -> {
                             log.error("Error applying discount for product: " + product.getId(), ex);
@@ -71,7 +71,7 @@ public class ProductServiceImpl implements ProductService {
                 .toList();
     }
 
-    private Product applyDiscountAsync(Product product) {
+    private Product applyDiscountAsync(final Product product) {
         final var discountedPrice = discountService.applyDiscount(product);
         product.setPriceDiscount(discountedPrice);
         return product;

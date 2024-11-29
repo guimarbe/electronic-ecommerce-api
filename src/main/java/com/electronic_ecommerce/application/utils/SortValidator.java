@@ -12,7 +12,7 @@ public final class SortValidator {
     private SortValidator() {}
 
     public static Sort validate(Sort sort, Class<?> entityClass) {
-        List<String> validFields = Arrays.stream(entityClass.getDeclaredFields())
+        final List<String> validFields = Arrays.stream(entityClass.getDeclaredFields())
                 .map(Field::getName)
                 .toList();
 

@@ -1,6 +1,7 @@
 package com.electronic_ecommerce.application.utils;
 
 import com.electronic_ecommerce.domain.model.product.Product;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 
 import java.util.Arrays;
@@ -16,9 +17,9 @@ public final class PaginationUtils {
 
     private PaginationUtils() {}
 
-    public static Sort validateSorting(final String[] sort) {
+    public static Sort validateSorting(final String[] sort, Class<?> entityClass) {
         final var sortBy = convertStringToSort(sort);
-        return SortValidator.validate(sortBy, Product.class);
+        return SortValidator.validate(sortBy, entityClass);
     }
 
     public static Integer getPageNumber(Integer pageNumber) {
@@ -33,6 +34,16 @@ public final class PaginationUtils {
             pageSize = DEFAULT_SIZE;
         } else if (pageSize.equals(-1)) {
             pageSize = Integer.MAX_VALUE;
+        }
+        return pageSize;
+    }
+
+    public static Integer setPageSize(final Page<Product> productPage) {
+        var pageSize = 0;
+        if (productPage.getSize() == Integer.MAX_VALUE) {
+            pageSize = (int) productPage.getTotalElements();
+        } else {
+            pageSize = productPage.getSize();
         }
         return pageSize;
     }

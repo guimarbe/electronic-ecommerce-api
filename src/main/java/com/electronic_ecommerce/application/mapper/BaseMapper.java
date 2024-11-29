@@ -1,8 +1,8 @@
 package com.electronic_ecommerce.application.mapper;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 public abstract class BaseMapper<E, D> {
@@ -19,11 +19,11 @@ public abstract class BaseMapper<E, D> {
     }
 
     public List<E> convertToEntityList(Collection<D> dto, Object... args) {
-        return convertToEntity(dto, args).stream().collect(Collectors.toList());
+        return new ArrayList<>(convertToEntity(dto, args));
     }
 
     public List<D> convertToDtoList(Collection<E> entity, Object... args) {
-        return convertToDto(entity, args).stream().collect(Collectors.toList());
+        return new ArrayList<>(convertToDto(entity, args));
     }
 
 }

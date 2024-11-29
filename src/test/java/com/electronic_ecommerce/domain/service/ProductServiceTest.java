@@ -69,7 +69,7 @@ class ProductServiceTest {
         when(productMapper.toPagedProductResponseDto(productPage)).thenReturn(expectedResponse);
 
         // Then
-        PagedResponseDto<Product> result = productService.getAllProducts(category, PAGE, SIZE, SORT);
+        final PagedResponseDto<Product> result = productService.getAllProducts(category, PAGE, SIZE, SORT);
 
         assertNotNull(result);
         assertEquals(expectedResponse.getPageNumber(), result.getPageNumber());
@@ -88,11 +88,11 @@ class ProductServiceTest {
         final String[] sort = {"description;desc"};
 
         final List<Product> productList = List.of(
-                new Product(1L, "SKU100", BigDecimal.valueOf(300), BigDecimal.ZERO, "Table", "furniture"),
-                new Product(2L, "SKU101", BigDecimal.valueOf(500), BigDecimal.ZERO, "Chair", "furniture")
+                new Product(1L, "SKU100", BigDecimal.valueOf(300), BigDecimal.ZERO, "Table", category),
+                new Product(2L, "SKU101", BigDecimal.valueOf(500), BigDecimal.ZERO, "Chair", category)
         );
 
-        Page<Product> productPage = new PageImpl<>(productList);
+        final Page<Product> productPage = new PageImpl<>(productList);
 
         // When
         when(productRepository.findProducts(eq(category), any(Pageable.class))).thenReturn(productPage);
@@ -139,7 +139,7 @@ class ProductServiceTest {
                 new Product(2L, "SKU002", BigDecimal.valueOf(200), BigDecimal.ZERO, "Product B", "category")
         );
 
-        Page<Product> productPage = new PageImpl<>(productList);
+        final Page<Product> productPage = new PageImpl<>(productList);
 
         // When
         when(discountService.applyDiscount(productList.getFirst())).thenReturn(BigDecimal.valueOf(90));
@@ -148,7 +148,7 @@ class ProductServiceTest {
         // Then
         final var method = ProductServiceImpl.class.getDeclaredMethod("checkAndApplyAvailableDiscounts", Page.class);
         method.setAccessible(true);
-        Page<Product> result = (Page<Product>) method.invoke(productService, productPage);
+        final Page<Product> result = (Page<Product>) method.invoke(productService, productPage);
 
         assertEquals(BigDecimal.valueOf(90), result.getContent().get(0).getPriceDiscount());
         assertEquals(BigDecimal.valueOf(180), result.getContent().get(1).getPriceDiscount());

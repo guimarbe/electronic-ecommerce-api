@@ -35,7 +35,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponseDto handleGenericException(Exception e) {
-        return new ErrorResponseDto(HttpStatus.INTERNAL_SERVER_ERROR, "", List.of(e.getMessage()));
+        return new ErrorResponseDto(HttpStatus.INTERNAL_SERVER_ERROR, "Internal server error", List.of(e.getMessage()));
     }
 
 }

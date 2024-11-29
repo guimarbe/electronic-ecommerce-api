@@ -57,7 +57,7 @@ public class DiscountServiceImpl implements DiscountService {
         var maxDiscount = BigDecimal.ZERO;
 
         for (Function<Product, BigDecimal> handler : discounts.values()) {
-            BigDecimal discount = handler.apply(product);
+            final var discount = handler.apply(product);
             maxDiscount = maxDiscount.max(discount);
         }
 

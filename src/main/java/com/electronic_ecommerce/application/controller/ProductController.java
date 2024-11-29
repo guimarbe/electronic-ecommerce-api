@@ -40,11 +40,11 @@ public class ProductController {
             @ApiResponse(responseCode = "500", description = "There was an unexpected error", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponseDto.class))})
     })
     @Parameters({
-            @Parameter(in = ParameterIn.QUERY, name = "category",
-                    description = """
+            @Parameter(in = ParameterIn.QUERY, name = "category", description = """
                         Type the kind of product are you looking for.<br>
                         - Currently categories available: \"accessories\", \"clothing\", \"electronics\", \"footwear\", \"home appliances\", \"home & kitchen\", \"sports\",  \"stationery\", \"toys & games\".<br>
-                        """),
+                        """,
+                        example = "electronics", schema = @Schema(type = "string")),
             @Parameter(in = ParameterIn.QUERY, name = "page", description = """
                         Shows the page number you want to retrieve (0..N).<br>
                         - Default page is 0.<br>

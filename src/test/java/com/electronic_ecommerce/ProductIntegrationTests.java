@@ -52,7 +52,7 @@ public class ProductIntegrationTests {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andReturn();
 
-        String responseBody = result.getResponse().getContentAsString();
+        final var responseBody = result.getResponse().getContentAsString();
         assertNotNull(responseBody);
         verify(productService).getAllProducts(null, null, null, null);
     }

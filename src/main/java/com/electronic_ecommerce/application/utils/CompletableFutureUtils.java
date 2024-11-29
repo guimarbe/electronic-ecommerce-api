@@ -7,7 +7,7 @@ public final class CompletableFutureUtils {
 
     private CompletableFutureUtils() {}
 
-    public static <T> List<T> collectResultsFromFutures(List<CompletableFuture<T>> futures) {
+    public static <T> List<T> collectResultsFromFutures(final List<CompletableFuture<T>> futures) {
         return CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]))
                 .thenApply(v -> futures.stream()
                         .map(CompletableFuture::join)

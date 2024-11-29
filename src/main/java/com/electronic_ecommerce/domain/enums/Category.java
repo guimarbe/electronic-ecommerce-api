@@ -1,5 +1,8 @@
 package com.electronic_ecommerce.domain.enums;
 
+import lombok.Getter;
+
+@Getter
 public enum Category {
     ACCESSORIES(1, "Accessories"),
     CLOTHING(2, "Clothing"),
@@ -19,11 +22,4 @@ public enum Category {
         this.description = description;
     }
 
-    public Integer getCode() {
-            return this.code;
-    }
-
-    public String getDescription() {
-        return this.description;
-    }
 }
